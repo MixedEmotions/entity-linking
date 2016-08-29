@@ -8,7 +8,7 @@ import java.util.List;
  * NIF Input object from JSON-LD
  * @author John McCrae <john@mccr.ae>
  */
-@JsonIgnoreProperties("@context")
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class NIFInput {
     private final String context = "http://mixedemotions-project.eu/ns/context.jsonld";
     private String id;

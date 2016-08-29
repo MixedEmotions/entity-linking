@@ -1,5 +1,6 @@
 package ie.nuig.entitylinking.main.nel;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import java.util.Arrays;
 import java.util.Collections;
@@ -9,6 +10,7 @@ import java.util.List;
  *
  * @author John McCrae <john@mccr.ae>
  */
+@JsonIgnoreProperties(ignoreUnknown=true)
 public class NIFOutput {
     private final String context = "http://mixedemotions-project.eu/ns/context.jsonld";
     private String id;
