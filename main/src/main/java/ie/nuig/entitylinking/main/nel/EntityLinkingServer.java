@@ -42,6 +42,7 @@ public class EntityLinkingServer {
                     
                     List<NIFOutput.Entry> entries = new ArrayList<NIFOutput.Entry>();
                     
+
                     for(NIFInput.Entry e : input.getEntries()) {
                         NIFOutput.Entry oe = new NIFOutput.Entry();
                         oe.setId(e.getId());
@@ -50,27 +51,26 @@ public class EntityLinkingServer {
                         ELDocument elDocument = new ELDocument(e.getIsString(), null);
 
                         entityLinkingMain.processDocument(elDocument);
+                    
 
                         for(AnnotatedMention mention : elDocument.getAnnotatedMention()) {
-                            NIFOutput.Entity na = new NIFOutput.Entity();
-                            String string = mention.getMention();
-                            int beginIndex = e.getIsString().indexOf(string);
-                            if(beginIndex < 0) {
-                                throw new RuntimeException(string + " was not in " + e.getIsString());
-                            }
-                            int endIndex = beginIndex + string.length();
-                            na.setId(e.getId() + "#char=" + beginIndex + "," + endIndex);
-                            na.setBeginIndex(beginIndex);
-                            na.setEndIndex(endIndex);
-                            na.setAnchorOf(string);
                             List<Pair<String, Double>> linkScorePairs = mention.getRankedListCandidates();
-                            if(linkScorePairs.size() != 1) {
-                                throw new RuntimeException("More than one link/score pair");
-                            }
-                            na.setReferences(linkScorePairs.get(0).getKey());
-                            na.setScore(linkScorePairs.get(0).getValue());
+                            if(!linkScorePairs.isEmpty()) {
+                                NIFOutput.Entity na = new NIFOutput.Entity();
+                                String string = mention.getMention();
+                                int beginIndex = e.getIsString().indexOf(string);
+                                if(beginIndex >= 0) {
+                                    int endIndex = beginIndex + string.length();
+                                    na.setId(e.getId() + "#char=" + beginIndex + "," + endIndex);
+                                    na.setBeginIndex(beginIndex);
+                                    na.setEndIndex(endIndex);
+                                    na.setAnchorOf(string);
+                                    na.setReferences(linkScorePairs.get(0).getKey());
+                                    na.setScore(linkScorePairs.get(0).getValue());
+                                }
 
-                            entities.add(na);
+                                entities.add(na);
+                            }
                         }
 
                         oe.setEntities(entities);
